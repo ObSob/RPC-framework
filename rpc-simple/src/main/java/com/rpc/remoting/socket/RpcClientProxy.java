@@ -1,4 +1,4 @@
-package com.rpc;
+package com.rpc.remoting.socket;
 
 import com.rpc.dto.RpcRequest;
 

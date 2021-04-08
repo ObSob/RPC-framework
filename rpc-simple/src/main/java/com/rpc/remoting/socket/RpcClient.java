@@ -1,4 +1,4 @@
-package com.rpc;
+package com.rpc.remoting.socket;
 
 import com.rpc.dto.RpcRequest;
 import com.rpc.dto.RpcResponse;
@@ -15,7 +15,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class RpcClient {
-    public static final Logger logger = LoggerFactory.getLogger(RpcClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(RpcClient.class);
 
     public Object sendRpcRequest(RpcRequest rpcRequest, String host, int port){
         try (Socket socket = new Socket(host, port)){
