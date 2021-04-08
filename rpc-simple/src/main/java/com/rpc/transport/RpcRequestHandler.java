@@ -1,4 +1,4 @@
-package com.rpc.remoting;
+package com.rpc.transport;
 
 import com.rpc.dto.RpcRequest;
 import com.rpc.dto.RpcResponse;

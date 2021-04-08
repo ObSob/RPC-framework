@@ -1,9 +1,10 @@
-package com.rpc.remoting.socket;
+package com.rpc.transport.socket;
 
 import com.rpc.dto.RpcRequest;
 import com.rpc.dto.RpcResponse;
 import com.rpc.registy.ServiceRegistry;
-import com.rpc.remoting.RpcRequestHandler;
+import com.rpc.registy.impl.DefaultServiceRegister;
+import com.rpc.transport.RpcRequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,17 +13,20 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class RpcRequestHandlerRunnable implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(RpcRequestHandlerRunnable.class);
+public class SocketRpcRequestHandlerRunnable implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(SocketRpcRequestHandlerRunnable.class);
 
     private Socket socket;
-    private RpcRequestHandler rpcRequestHandler;
-    private ServiceRegistry serviceRegistry;
+    private static RpcRequestHandler rpcRequestHandler;
+    private static ServiceRegistry serviceRegistry;
 
-    public RpcRequestHandlerRunnable(Socket socket, RpcRequestHandler rpcRequestHandler, ServiceRegistry serviceRegistry) {
+    static {
+        rpcRequestHandler = new RpcRequestHandler();
+        serviceRegistry = new DefaultServiceRegister();
+    }
+
+    public SocketRpcRequestHandlerRunnable(Socket socket) {
         this.socket = socket;
-        this.rpcRequestHandler = rpcRequestHandler;
-        this.serviceRegistry = serviceRegistry;
     }
 
     @Override

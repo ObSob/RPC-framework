@@ -1,18 +1,20 @@
-package com.rpc.remoting.socket;
+package com.rpc.transport;
 
 import com.rpc.dto.RpcRequest;
+import com.rpc.transport.socket.SocketRpcClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 public class RpcClientProxy implements InvocationHandler {
-    private final String host;
-    private final int port;
+    private static final Logger logger = LoggerFactory.getLogger(RpcClientProxy.class);
+    private RpcClient rpcClient;
 
-    public RpcClientProxy(String host, int port){
-        this.host = host;
-        this.port = port;
+    public RpcClientProxy(RpcClient rpcClient){
+        this.rpcClient = rpcClient;
     }
 
     @SuppressWarnings("unchecked")
@@ -22,12 +24,12 @@ public class RpcClientProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
+        logger.info("invoked method: {}", method.getName());
         RpcRequest rpcRequest = RpcRequest.builder().methodName(method.getName())
                 .parameters(args)
                 .interfaceName(method.getDeclaringClass().getName())
                 .paramTypes(method.getParameterTypes())
                 .build();
-        RpcClient rpcClient = new RpcClient();
-        return rpcClient.sendRpcRequest(rpcRequest, host, port);
+        return rpcClient.sendRpcRequest(rpcRequest);
     }
 }

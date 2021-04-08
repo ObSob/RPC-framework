@@ -1,8 +1,7 @@
 package com.rpc;
 
 import com.rpc.registy.impl.DefaultServiceRegister;
-import com.rpc.remoting.socket.RpcServer;
-import com.rpc.service.HelloService;
+import com.rpc.transport.socket.SocketRpcServer;
 
 public class RpcServerMain {
     public static void main(String[] args){
@@ -10,7 +9,7 @@ public class RpcServerMain {
         DefaultServiceRegister defaultServiceRegister = new DefaultServiceRegister();
         defaultServiceRegister.register(new HelloServiceAnotherImpl());
         defaultServiceRegister.register(new HelloServiceImpl());
-        RpcServer rpcServer = new RpcServer(defaultServiceRegister);
-        rpcServer.start(9999);
+        SocketRpcServer socketRpcServer = new SocketRpcServer();
+        socketRpcServer.start(9999);
     }
 }

@@ -18,8 +18,8 @@ public class DefaultServiceRegister implements ServiceRegistry {
      * key:service/interface name
      * value:service
      */
-    private final Map<String, Object> serviceMap = new ConcurrentHashMap<>();
-    private final Set<String> registeredService = ConcurrentHashMap.newKeySet();
+    private static final Map<String, Object> serviceMap = new ConcurrentHashMap<>();
+    private static final Set<String> registeredService = ConcurrentHashMap.newKeySet();
 
     @Override
     public synchronized <T> void register(T service) {
@@ -37,13 +37,15 @@ public class DefaultServiceRegister implements ServiceRegistry {
         for (Class i: interfaces) {
             serviceMap.put(i.getCanonicalName(), service);
         }
-        logger.info("Add service: {} and interface: {}", serviceName, service.getClass());
+        logger.info("Add service: {} and interface: {}", serviceName, service.getClass().getInterfaces());
     }
 
     @Override
     public synchronized Object getService(String serviceName) {
         Object service = serviceMap.get(serviceName);
         if (service == null) {
+            logger.error("service: {} not found", serviceName);
+            logger.error("service map: {}", serviceMap);
             throw new RpcException(RpcErrorMessageEnum.SERVICE_CAN_NOT_BE_FOUND);
         }
         return service;
