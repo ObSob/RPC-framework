@@ -16,7 +16,7 @@ import java.io.ByteArrayOutputStream;
 public class KryoSerializer implements Serializer {
     private static final Logger logger = LoggerFactory.getLogger(KryoSerializer.class);
 
-    private static final ThreadLocal<Kryo> kryoThreadLocal = ThreadLocal.withInitial(() -> {
+    private final ThreadLocal<Kryo> kryoThreadLocal = ThreadLocal.withInitial(() -> {
         Kryo kryo = new Kryo();
         kryo.register(RpcResponse.class);
         kryo.register(RpcRequest.class);

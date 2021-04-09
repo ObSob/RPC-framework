@@ -27,11 +27,11 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         try {
             RpcRequest rpcRequest = (RpcRequest) msg;
-            logger.info(String.format("server receive massage: %s", rpcRequest.toString()));
+            logger.info(String.format("server receive massage: %s", rpcRequest.getRequestId()));
             String interFaceName = rpcRequest.getInterfaceName();
             Object service = serviceRegistry.getService(interFaceName);
             Object result = rpcRequestHandler.handle(rpcRequest, service);
-            ChannelFuture f = ctx.writeAndFlush(RpcResponse.success(result));
+            ChannelFuture f = ctx.writeAndFlush(RpcResponse.success(result, rpcRequest.getRequestId()));
             f.addListener(ChannelFutureListener.CLOSE);
         } finally {
             ReferenceCountUtil.release(msg);
