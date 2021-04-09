@@ -1,12 +1,14 @@
 package com.rpc.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.io.Serializable;
 
-@Data
 @Builder
+@AllArgsConstructor
+@ToString
+@Getter
+@NoArgsConstructor
 public class RpcRequest implements Serializable {
     private String interfaceName;
     private String methodName;

@@ -1,11 +1,16 @@
 package com.rpc.dto;
 
 import com.rpc.enumeration.RpcResponseCode;
-import lombok.Data;
+import lombok.*;
 
 import java.io.Serializable;
 
-@Data
+@Builder
+@AllArgsConstructor
+@ToString
+@Getter
+@Setter
+@NoArgsConstructor
 public class RpcResponse<T> implements Serializable {
 
     /**

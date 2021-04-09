@@ -41,4 +41,9 @@ public class SocketRpcClient implements RpcClient {
             throw new RpcException("invoke service failed", e);
         }
     }
+
+    @Override
+    public void shutdown() {
+
+    }
 }

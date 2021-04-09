@@ -4,4 +4,6 @@ import com.rpc.dto.RpcRequest;
 
 public interface RpcClient {
     Object sendRpcRequest(RpcRequest rpcRequest);
+
+    void shutdown();
 }
