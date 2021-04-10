@@ -4,25 +4,33 @@ import com.rpc.dto.RpcRequest;
 import com.rpc.dto.RpcResponse;
 import com.rpc.exception.RpcException;
 
-import com.rpc.transport.RpcClient;
+import com.rpc.registy.ServiceDiscovery;
+import com.rpc.registy.ServiceRegistry;
+import com.rpc.registy.zk.ZKServiceDiscovery;
+import com.rpc.registy.zk.ZKServiceRegistry;
+import com.rpc.transport.ClientTransport;
 import com.rpc.utils.checker.RpcMessageChecker;
-import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
-@AllArgsConstructor
-public class SocketRpcClient implements RpcClient {
+public class SocketRpcClient implements ClientTransport {
     private static final Logger logger = LoggerFactory.getLogger(SocketRpcClient.class);
-    private String host;
-    private int port;
+    private final ServiceDiscovery serviceDiscovery;
+
+    public SocketRpcClient() {
+        serviceDiscovery = new ZKServiceDiscovery();
+    }
 
     public Object sendRpcRequest(RpcRequest rpcRequest){
-        try (Socket socket = new Socket(host, port)){
+        InetSocketAddress inetSocketAddress = serviceDiscovery.lookupService(rpcRequest.getInterfaceName());
+        try (Socket socket = new Socket()){
+            socket.connect(inetSocketAddress);
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(rpcRequest);
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
@@ -36,7 +44,7 @@ public class SocketRpcClient implements RpcClient {
     }
 
     @Override
-    public void shutdown() {
+    public void close() {
 
     }
 }

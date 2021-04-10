@@ -7,7 +7,7 @@ import com.rpc.transport.socket.SocketRpcClient;
 
 public class RpcClientMain {
     public static void main(String[] args){
-        RpcClientProxy rpcClientProxy = new RpcClientProxy(new SocketRpcClient("127.0.0.1", 9999));
+        RpcClientProxy rpcClientProxy = new RpcClientProxy(new SocketRpcClient());
         HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
         // only one service impl is used
         String hello = helloService.hello(new Hello("111", "222"));

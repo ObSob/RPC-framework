@@ -2,6 +2,10 @@ package com.rpc.transport.netty.server;
 
 import com.rpc.dto.RpcRequest;
 import com.rpc.dto.RpcResponse;
+import com.rpc.provider.ServiceProvider;
+import com.rpc.provider.ServiceProviderImpl;
+import com.rpc.registy.ServiceRegistry;
+import com.rpc.registy.zk.ZKServiceRegistry;
 import com.rpc.serialize.KryoSerializer.KryoSerializer;
 import com.rpc.transport.netty.codec.NettyKryoDecoder;
 import com.rpc.transport.netty.codec.NettyKryoEncoder;
@@ -18,17 +22,31 @@ import io.netty.handler.logging.LoggingHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NettyRpcServer {
-    private static final Logger logger = LoggerFactory.getLogger(NettyServerHandler.class);
-    private final int port;
-    private KryoSerializer kryoSerializer;
+import java.net.InetSocketAddress;
 
-    public NettyRpcServer(int port) {
+public class NettyServer {
+    private static final Logger logger = LoggerFactory.getLogger(NettyServerHandler.class);
+    private final String host;
+    private final int port;
+    private final KryoSerializer kryoSerializer;
+    private final ServiceRegistry serviceRegistry;
+    private final ServiceProvider serviceProvider;
+
+    public NettyServer(String host, int port) {
+        this.host = host;
         this.port = port;
         kryoSerializer = new KryoSerializer();
+        serviceRegistry = new ZKServiceRegistry();
+        serviceProvider = new ServiceProviderImpl();
     }
 
-    public void run() {
+    public <T> void publishService(Object service, Class<T> serviceClass) {
+        serviceProvider.addServiceProvider(service);
+        serviceRegistry.registerService(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
+        start();
+    }
+
+    public void start() {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {

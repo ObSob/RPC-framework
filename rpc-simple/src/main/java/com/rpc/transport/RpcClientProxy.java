@@ -1,7 +1,6 @@
 package com.rpc.transport;
 
 import com.rpc.dto.RpcRequest;
-import com.rpc.transport.socket.SocketRpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,10 +11,10 @@ import java.util.UUID;
 
 public class RpcClientProxy implements InvocationHandler {
     private static final Logger logger = LoggerFactory.getLogger(RpcClientProxy.class);
-    private RpcClient rpcClient;
+    private ClientTransport clientTransport;
 
-    public RpcClientProxy(RpcClient rpcClient){
-        this.rpcClient = rpcClient;
+    public RpcClientProxy(ClientTransport clientTransport){
+        this.clientTransport = clientTransport;
     }
 
     @SuppressWarnings("unchecked")
@@ -32,6 +31,6 @@ public class RpcClientProxy implements InvocationHandler {
                 .paramTypes(method.getParameterTypes())
                 .requestId(UUID.randomUUID().toString())
                 .build();
-        return rpcClient.sendRpcRequest(rpcRequest);
+        return clientTransport.sendRpcRequest(rpcRequest);
     }
 }
